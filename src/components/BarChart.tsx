@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import Loading from "./Loading";
 import { Link } from "react-router-dom";
+import MobileScreenDetector from "./MobileScreenDetector";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const fetchChartData = async () => {
 
 const Chart = () => {
   const { data, isLoading, error } = useQuery("chartData", fetchChartData);
+  let isMobile = MobileScreenDetector();
 
   if (isLoading) {
     return <Loading />;
@@ -31,10 +33,12 @@ const Chart = () => {
     return <div>Error: {error.toString()}</div>;
   }
 
-  const dataArray = Object.entries(data).map(([name, value]) => ({
-    name,
-    value,
-  }));
+  const dataArray = Object.entries(data)
+    .map(([name, value]) => ({
+      name,
+      value,
+    }))
+    .filter((d) => d.name !== "updated");
 
   return (
     <div>
@@ -46,9 +50,13 @@ const Chart = () => {
       <div className="flex justify-center">
         <div className="w-full sm:w-11/12 md:w-10/12 lg:w-8/12 ">
           <div style={{ width: "100%" }}>
-            <BarChart width={1500} height={400} data={dataArray}>
+            <BarChart
+              width={isMobile ? 375 : 1500}
+              height={800}
+              data={dataArray}
+            >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
+              <XAxis fontSize={12} dataKey="name" />
               <YAxis fontSize={8} />
               <Tooltip />
               <Legend />

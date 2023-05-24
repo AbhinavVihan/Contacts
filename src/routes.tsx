@@ -67,12 +67,18 @@ const Sidebar = () => {
     <nav className="bg-gray-200 w-1/4 sm:w-1/6">
       <ul className="p-4">
         <li>
-          <Link className="block py-2 px-4 rounded hover:bg-gray-300" to="/">
+          <Link
+            className="block py-1 px-4 rounded hover:bg-gray-300 bg-blue-100"
+            to="/"
+          >
             Contact
           </Link>
         </li>
         <li>
-          <Link className="block py-2 px-4 rounded hover:bg-gray-300" to="/map">
+          <Link
+            className="block mt-5 py-1 px-4 rounded hover:bg-gray-300 bg-blue-100"
+            to="/map"
+          >
             Charts and Map
           </Link>
         </li>

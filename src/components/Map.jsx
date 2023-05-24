@@ -6,6 +6,7 @@ import "leaflet/dist/leaflet.css";
 import { Link } from "react-router-dom";
 import L from "leaflet";
 import Loading from "./Loading";
+import MobileScreenDetector from "./MobileScreenDetector";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const Map = () => {
     isError,
   } = useQuery("countriesData", fetchCountriesData);
 
+  let isMobile = MobileScreenDetector();
   if (isLoading) {
     return <Loading />;
   }
@@ -43,7 +45,7 @@ const Map = () => {
         </Link>
       </div>
       <div className="m-auto">
-        <div style={{ width: "100%", height: "800px" }}>
+        <div style={{ width: "100%", height: isMobile ? "500px" : "700px" }}>
           <MapContainer
             center={[51.505, -0.09]}
             zoom={13}
@@ -52,9 +54,9 @@ const Map = () => {
           >
             <TileLayer url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png" />
 
-            {countriesData.map((country) => (
+            {countriesData.map((country, i) => (
               <Marker
-                key={country.countryInfo._id}
+                key={i}
                 position={[country.countryInfo.lat, country.countryInfo.long]}
                 icon={L.icon({
                   iconUrl: country.countryInfo.flag ?? (

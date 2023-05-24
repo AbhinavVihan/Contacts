@@ -35,6 +35,9 @@ const Map = () => {
         <Link to="/" className="text-blue-500 hover:text-blue-700">
           Back
         </Link>
+        <Link to="/barGraph" className="text-blue-500 hover:text-blue-700">
+          Go to Bar Graph
+        </Link>
         <Link to="/linegraph" className="text-red-500 hover:text-red-700">
           Go to Line Graph
         </Link>

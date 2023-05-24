@@ -11,6 +11,7 @@ import ContactList from "./components/ContactList/ContactList";
 import ContactForm from "./components/ContactForm/ContactForm";
 import NotFoundPage from "./components/NotFoundPage";
 import Loading from "./components/Loading";
+import BarCharts from "./components/BarChart";
 
 const Map = lazy(() => import("./components/Map.jsx"));
 const LineGraph = lazy(() => import("./components/LineGraph"));
@@ -27,7 +28,11 @@ const AppContent = () => {
   const location = useLocation();
   let shouldShowFullMapAndGraph = false;
 
-  if (location.pathname === "/map" || location.pathname === "/linegraph") {
+  if (
+    location.pathname === "/map" ||
+    location.pathname === "/linegraph" ||
+    location.pathname === "/barGraph"
+  ) {
     shouldShowFullMapAndGraph = true;
   }
 
@@ -48,6 +53,7 @@ const AppContent = () => {
             <>
               <Route path="/map" element={<MapLazy />} />
               <Route path="/linegraph" element={<LineGraphLazy />} />
+              <Route path="/barGraph" element={<BarGraphLazy />} />
             </>
           )}
         </Routes>
@@ -84,6 +90,12 @@ const MapLazy = () => (
 const LineGraphLazy = () => (
   <Suspense fallback={<Loading />}>
     <LineGraph />
+  </Suspense>
+);
+
+const BarGraphLazy = () => (
+  <Suspense fallback={<Loading />}>
+    <BarCharts />
   </Suspense>
 );
 

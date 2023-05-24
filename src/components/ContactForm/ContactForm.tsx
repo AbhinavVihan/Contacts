@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { useAppDispatch } from "../store";
+import { useAppDispatch } from "../../store";
 import {
   addContact,
   selectContacts,
   getContactById,
   editContact,
-} from "../store/contactsSlice";
+} from "../../store/contactsSlice";
 import { useSelector } from "react-redux";
-import { RootState } from "../store/types";
+import { RootState } from "../../store/types";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
@@ -22,6 +22,9 @@ const ContactForm = () => {
   const [firstName, setFirstName] = useState(contact?.firstName ?? "");
   const [lastName, setLastName] = useState(contact?.lastName ?? "");
   const [status, setStatus] = useState(contact?.status ?? "inactive");
+
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
 
   const dispatch = useAppDispatch();
 
@@ -38,26 +41,38 @@ const ContactForm = () => {
   const handleSubmit = (e: React.FormEvent, key: string, id?: number) => {
     e.preventDefault();
 
-    // Dispatch the addContact and editContact action accordingly
-    const shoulEditOrAdd = () => {
-      if (firstName !== "" || lastName !== "") {
-        return true;
-      }
-    };
+    // Clear previous error messages
+    setFirstNameError("");
+    setLastNameError("");
 
+    let hasError = false;
+
+    if (firstName === "") {
+      setFirstNameError("First name is required");
+      hasError = true;
+    }
+
+    if (lastName === "") {
+      setLastNameError("Last name is required");
+      hasError = true;
+    }
+
+    if (hasError) {
+      return;
+    }
+
+    // Dispatch the addContact and editContact action accordingly
     switch (key) {
       case editButtonText:
-        if (shoulEditOrAdd() && id) {
+        if (id) {
           dispatch(editContact({ id: id, firstName, lastName, status }));
         }
         break;
       case addButtonText:
-        shoulEditOrAdd() &&
-          dispatch(
-            addContact({ id: contacts.length + 1, firstName, lastName, status })
-          );
+        dispatch(
+          addContact({ id: contacts.length + 1, firstName, lastName, status })
+        );
         break;
-
       default:
         break;
     }
@@ -66,7 +81,7 @@ const ContactForm = () => {
     setFirstName("");
     setLastName("");
     setStatus("inactive");
-    navigate("/");
+    !hasError && navigate("/");
   };
 
   const handleChange = (
@@ -76,26 +91,22 @@ const ContactForm = () => {
     switch (key) {
       case "inactive":
         setStatus("inactive");
-
         break;
       case "active":
         setStatus("active");
-
         break;
       case "lastName":
         setLastName(e.target.value);
         break;
-
       case "firstName":
         setFirstName(e.target.value);
         break;
-
       default:
         break;
     }
   };
 
-  const editButtonText = "Save Editted Contact";
+  const editButtonText = "Save Edited Contact";
   const addButtonText = "Save Contact";
 
   return (
@@ -111,6 +122,9 @@ const ContactForm = () => {
           value={firstName}
           onChange={(e) => handleChange(e, "firstName")}
         />
+        {firstNameError && (
+          <p className="text-red-500 text-sm">{firstNameError}</p>
+        )}
         <input
           className="mb-2 p-2 border border-gray-300 rounded"
           type="text"
@@ -118,11 +132,13 @@ const ContactForm = () => {
           value={lastName}
           onChange={(e) => handleChange(e, "lastName")}
         />
+        {lastNameError && (
+          <p className="text-red-500 text-sm">{lastNameError}</p>
+        )}
         <label className="inline-flex items-center mb-2">
           <input
             className="mr-2"
             type="radio"
-            placeholder="active"
             checked={activeRadio[0]}
             onChange={(e) => handleChange(e, "active")}
           />
@@ -132,7 +148,6 @@ const ContactForm = () => {
           <input
             className="mr-2"
             type="radio"
-            placeholder="inactive"
             checked={activeRadio[1]}
             onChange={(e) => handleChange(e, "inactive")}
           />

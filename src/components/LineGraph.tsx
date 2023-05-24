@@ -10,6 +10,8 @@ import {
   CartesianGrid,
 } from "recharts";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import Loading from "./Loading";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +25,7 @@ function App() {
   const { data, isLoading, error } = useQuery("casesData", fetchData);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (error) {
@@ -41,17 +43,26 @@ function App() {
   }
 
   return (
-    <div className="flex justify-center">
-      <LineChart width={600} height={400} data={arr}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis fontSize={11} textAnchor="end" />
-        <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="cases" stroke="#8884d8" />
-        <Line type="monotone" dataKey="deaths" stroke="#82ca9d" />
-        <Line type="monotone" dataKey="recovered" stroke="#ffc658" />
-      </LineChart>
+    <div>
+      <Link to="/" className="text-blue-500 hover:text-blue-700">
+        Home
+      </Link>
+      <div className="flex justify-center">
+        <div className="w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-6/12">
+          <div style={{ width: "100%" }}>
+            <LineChart width={600} height={400} data={arr}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis fontSize={11} textAnchor="end" />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="cases" stroke="#8884d8" />
+              <Line type="monotone" dataKey="deaths" stroke="#82ca9d" />
+              <Line type="monotone" dataKey="recovered" stroke="#ffc658" />
+            </LineChart>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

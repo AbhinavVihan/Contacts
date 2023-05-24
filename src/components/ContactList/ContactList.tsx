@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { deleteContact, selectContacts } from "../store/contactsSlice";
-import { useAppDispatch } from "../store";
+import { deleteContact, selectContacts } from "../../store/contactsSlice";
+import { useAppDispatch } from "../../store";
 import { Link } from "react-router-dom";
 
 const ContactList = () => {

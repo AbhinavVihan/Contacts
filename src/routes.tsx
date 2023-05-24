@@ -7,9 +7,10 @@ import {
   Outlet,
   useLocation,
 } from "react-router-dom";
-import ContactList from "./components/ContactList";
-import ContactForm from "./components/ContactForm";
+import ContactList from "./components/ContactList/ContactList";
+import ContactForm from "./components/ContactForm/ContactForm";
 import NotFoundPage from "./components/NotFoundPage";
+import Loading from "./components/Loading";
 
 const Map = lazy(() => import("./components/Map.jsx"));
 const LineGraph = lazy(() => import("./components/LineGraph"));
@@ -17,35 +18,45 @@ const LineGraph = lazy(() => import("./components/LineGraph"));
 const App = () => {
   return (
     <Router>
-      <div className="flex min-h-screen">
-        <Sidebar />
-
-        <div className="w-3/4 sm:w-5/6 p-4 bg-white">
-          <Routes>
-            <Route path="/" element={<ContactList />} />
-
-            <Route path="/" element={<Outlet />}>
-              <Route path="add" element={<ContactForm />} />
-              <Route path="contact/:id" element={<ContactForm />} />
-            </Route>
-            <Route path="*" element={<NotFoundPage />} />
-            <Route path="/map" element={MapLazy()} />
-            <Route path="/linegraph" element={LineGraphLazy()} />
-          </Routes>
-        </div>
-      </div>
+      <AppContent />
     </Router>
   );
 };
 
-const Sidebar = () => {
+const AppContent = () => {
   const location = useLocation();
-  const hideSidebar = location.pathname === "/map";
+  let shouldShowFullMapAndGraph = false;
 
-  if (hideSidebar) {
-    return null; // Return null to hide the sidebar when on /map route
+  if (location.pathname === "/map" || location.pathname === "/linegraph") {
+    shouldShowFullMapAndGraph = true;
   }
 
+  return (
+    <div className="flex min-h-screen">
+      {!shouldShowFullMapAndGraph && <Sidebar />}
+
+      <div className={`${!shouldShowFullMapAndGraph && "w-3/4"} p-4 bg-white`}>
+        <Routes>
+          <Route path="/" element={<ContactList />} />
+
+          <Route path="/" element={<Outlet />}>
+            <Route path="add" element={<ContactForm />} />
+            <Route path="contact/:id" element={<ContactForm />} />
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+          {shouldShowFullMapAndGraph && (
+            <>
+              <Route path="/map" element={<MapLazy />} />
+              <Route path="/linegraph" element={<LineGraphLazy />} />
+            </>
+          )}
+        </Routes>
+      </div>
+    </div>
+  );
+};
+
+const Sidebar = () => {
   return (
     <nav className="bg-gray-200 w-1/4 sm:w-1/6">
       <ul className="p-4">
@@ -65,13 +76,13 @@ const Sidebar = () => {
 };
 
 const MapLazy = () => (
-  <Suspense fallback={<div>Loading...</div>}>
+  <Suspense fallback={<Loading />}>
     <Map />
   </Suspense>
 );
 
 const LineGraphLazy = () => (
-  <Suspense fallback={<div>Loading...</div>}>
+  <Suspense fallback={<Loading />}>
     <LineGraph />
   </Suspense>
 );

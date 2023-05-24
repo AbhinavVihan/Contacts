@@ -12,18 +12,21 @@ import {
 import Loading from "./Loading";
 import { Link } from "react-router-dom";
 import MobileScreenDetector from "./MobileScreenDetector";
+import axios from "axios";
 
 const queryClient = new QueryClient();
 
 const fetchChartData = async () => {
-  const response = await fetch("https://disease.sh/v3/covid-19/all");
-  const data = await response.json();
-  return data;
+  // Send a GET request to retrieve COVID-19 data for all countries
+  const response = await axios.get("https://disease.sh/v3/covid-19/all");
+  // Return the response data
+  return response.data;
 };
 
 const Chart = () => {
   const { data, isLoading, error } = useQuery("chartData", fetchChartData);
-  let isMobile = MobileScreenDetector();
+  let isMobile = true;
+  isMobile = MobileScreenDetector();
 
   if (isLoading) {
     return <Loading />;

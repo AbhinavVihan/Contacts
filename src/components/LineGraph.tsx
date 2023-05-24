@@ -17,14 +17,18 @@ import MobileScreenDetector from "./MobileScreenDetector";
 const queryClient = new QueryClient();
 
 const fetchData = async () => {
+  // Send a GET request to retrieve historical COVID-19 data
   const response = await axios.get(
     "https://disease.sh/v3/covid-19/historical/all?lastdays=all"
   );
+
+  // Return the response data
   return response.data;
 };
 function App() {
   const { data, isLoading, error } = useQuery("casesData", fetchData);
-  let isMobile = MobileScreenDetector();
+  let isMobile = true;
+  isMobile = MobileScreenDetector();
 
   if (isLoading) {
     return <Loading />;

@@ -11,7 +11,9 @@ import MobileScreenDetector from "./MobileScreenDetector";
 const queryClient = new QueryClient();
 
 const fetchCountriesData = async () => {
+  // Send a GET request to retrieve COVID-19 data for all countries
   const response = await axios.get("https://disease.sh/v3/covid-19/countries");
+  // Return the response data
   return response.data;
 };
 
